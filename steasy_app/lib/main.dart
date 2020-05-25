@@ -48,6 +48,54 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
   void initState() {
     
     super.initState();
+
+    FlutterBlue.instance.state.listen((state) {
+      if(state == BluetoothState.off){
+        print('----------------------------------');
+        print('ALERT THE USER TO TURN ON BLUETOOTH');
+        print('DISCONNECT FROM DEVICE AND STOP SCANNING');
+        print('----------------------------------');
+      }
+      else if(state == BluetoothState.on){
+        print('----------------------------------');
+        print('DEVICE-ADAPTER-STATE');
+        print(state);
+        print('----------------------------------');
+        startScan();
+      }
+     });
+  }
+
+  startScan(){
+    setState(() {
+      connectionText = "---> Start Scanning <---";
+      print(connectionText);
+    });
+    scanSubScription = flutterBlue.scan().listen((scanResult) {
+      if(scanResult.device.name.contains(targetDeviceName)){
+        print('--------------------------');
+        print("FOUND DEVICE BY THE NAME");
+        print('--------------------------');
+
+        setState(() {
+          connectionText = "---> Found target Device <---";
+          print(connectionText);
+        });       
+
+        targetDevice = scanResult.device;
+        targetDevice.state.listen((deviceState) {
+          if(deviceState == BluetoothDeviceState.connected){
+            print("DEVICE IS CONNECTED");
+          } else if (deviceState == BluetoothDeviceState.disconnected){
+            print("DEVICE IS DISCONNECTED");
+          } else {
+            print("DEVICESTATE UNKNOWN");
+          }
+         });
+      }
+     },
+    );
+
   }
 
 
