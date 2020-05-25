@@ -37,7 +37,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult> scanSubScription;
   List<BluetoothDevice> connectedDevices;
-  BluetoothDevice targetDevice;
+  BluetoothDevice steasyDevice;
   BluetoothCharacteristic targetCharacteristic;
   String connectionText = "";
   bool isConnected;
@@ -81,8 +81,8 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
           print(connectionText);
         });       
 
-        targetDevice = scanResult.device;
-        targetDevice.state.listen((deviceState) {
+        steasyDevice = scanResult.device;
+        steasyDevice.state.listen((deviceState) {
           if(deviceState == BluetoothDeviceState.connected){
             print("DEVICE IS CONNECTED");
           } else if (deviceState == BluetoothDeviceState.disconnected){
@@ -96,7 +96,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
      },onDone: () => stopScan());
   }
 
-    stopScan() {
+  stopScan() {
     scanSubScription?.cancel();
     scanSubScription = null;
     print('--------------------------');
@@ -104,6 +104,41 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     print('--------------------------');
   }
   
+  Future<void> connectToDevice() async {
+    if (steasyDevice == null) return;
+    print('--------------------------');
+    print("FOUNDED DEVICE IS CONNECTING");
+    print('--------------------------');
+    setState(() {
+      connectionText = "---> Device Connecting <---";
+      print(connectionText);
+    });
+    connectedDevices = await flutterBlue.connectedDevices;
+    for (BluetoothDevice device in connectedDevices) {
+      print(device);
+      if(device == steasyDevice){
+        print('ALREADY CONNECTED');
+        isConnected = true;          
+      }
+    }
+    if (!isConnected){
+      await steasyDevice.connect();
+      setState(() {
+        connectionText = "---> Device Connected <---";
+        isConnected = true;
+        print(connectionText);
+      });
+    }
+    discoverServices();
+  }
+
+
+
+
+
+
+
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
