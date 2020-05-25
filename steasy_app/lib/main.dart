@@ -21,29 +21,35 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: StreamBuilder<BluetoothState>(
-          stream: FlutterBlue.instance.state,
-          initialData: BluetoothState.unknown,
-          builder: (c, snapshot) {
-            //final state = snapshot.data;
-            return MyBluetoothApp();
-          }),
+      home: Scaffold(body: MyBluetoothApp(),)
     );
   }
 }
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 class MyBluetoothApp extends StatefulWidget {
-  MyBluetoothApp({Key key, this.title}) : super(key: key);
-  final String title;
+  MyBluetoothApp({Key key, this.state}) : super(key: key);
+  final BluetoothState state;
   @override
-  MyBluetoothAppState createState() => MyBluetoothAppState();
+  MySteasyState createState() => MySteasyState();
 }
 
-class MyBluetoothAppState extends State<MyBluetoothApp> {
-  int _counter = 0;
+class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderStateMixin {
+  final String serverUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  final String charUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+  final String targetDeviceName = "Steasy";
+  final FlutterBlue flutterBlue = FlutterBlue.instance;
+  StreamSubscription<ScanResult> scanSubScription;
+  BluetoothDevice targetDevice;
+  BluetoothCharacteristic targetCharacteristic;
+  String connectionText = "";
+  bool isConnected;
+
+
+  @override
+  void initState() {
+    
+    super.initState();
+  }
+
 
   void _incrementCounter() {
     setState(() {
@@ -52,7 +58,6 @@ class MyBluetoothAppState extends State<MyBluetoothApp> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 
@@ -68,7 +73,7 @@ class MyBluetoothAppState extends State<MyBluetoothApp> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.state.toString()),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -94,7 +99,7 @@ class MyBluetoothAppState extends State<MyBluetoothApp> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              '',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
