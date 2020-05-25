@@ -49,14 +49,27 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     
     super.initState();
 
-    FlutterBlue.instance.state.listen((state) {
-      if(state == BluetoothState.off){
+      if(widget.state == BluetoothState.off){
         print('----------------------------------');
         print('ALERT THE USER TO TURN ON BLUETOOTH');
         print('DISCONNECT FROM DEVICE AND STOP SCANNING');
         print('----------------------------------');
       }
-      else if(state == BluetoothState.on){
+      else if(widget.state == BluetoothState.on){
+        print('----------------------------------');
+        print('DEVICE-ADAPTER-STATE');
+        print(widget.state);
+        print('----------------------------------');
+        startScan();
+      }
+    FlutterBlue.instance.state.listen((state) {
+      if(widget.state == BluetoothState.off){
+        print('----------------------------------');
+        print('ALERT THE USER TO TURN ON BLUETOOTH');
+        print('DISCONNECT FROM DEVICE AND STOP SCANNING');
+        print('----------------------------------');
+      }
+      else if(widget.state == BluetoothState.on){
         print('----------------------------------');
         print('DEVICE-ADAPTER-STATE');
         print(state);
@@ -98,7 +111,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
 
   }
 
-
+  
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
