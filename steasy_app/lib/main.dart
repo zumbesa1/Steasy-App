@@ -26,8 +26,6 @@ class MyApp extends StatelessWidget {
   }
 }
 class MyBluetoothApp extends StatefulWidget {
-  MyBluetoothApp({Key key, this.state}) : super(key: key);
-  final BluetoothState state;
   @override
   MySteasyState createState() => MySteasyState();
 }
@@ -38,6 +36,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
   final String targetDeviceName = "Steasy";
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult> scanSubScription;
+  List<BluetoothDevice> connectedDevices;
   BluetoothDevice targetDevice;
   BluetoothCharacteristic targetCharacteristic;
   String connectionText = "";
@@ -49,27 +48,14 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     
     super.initState();
 
-      if(widget.state == BluetoothState.off){
-        print('----------------------------------');
-        print('ALERT THE USER TO TURN ON BLUETOOTH');
-        print('DISCONNECT FROM DEVICE AND STOP SCANNING');
-        print('----------------------------------');
-      }
-      else if(widget.state == BluetoothState.on){
-        print('----------------------------------');
-        print('DEVICE-ADAPTER-STATE');
-        print(widget.state);
-        print('----------------------------------');
-        startScan();
-      }
     FlutterBlue.instance.state.listen((state) {
-      if(widget.state == BluetoothState.off){
+      if(state == BluetoothState.off){
         print('----------------------------------');
         print('ALERT THE USER TO TURN ON BLUETOOTH');
         print('DISCONNECT FROM DEVICE AND STOP SCANNING');
         print('----------------------------------');
       }
-      else if(widget.state == BluetoothState.on){
+      else if(state == BluetoothState.on){
         print('----------------------------------');
         print('DEVICE-ADAPTER-STATE');
         print(state);
@@ -105,12 +91,18 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
             print("DEVICESTATE UNKNOWN");
           }
          });
+         connectToDevice();
       }
-     },
-    );
-
+     },onDone: () => stopScan());
   }
 
+    stopScan() {
+    scanSubScription?.cancel();
+    scanSubScription = null;
+    print('--------------------------');
+    print("STOPPED SCANNING");
+    print('--------------------------');
+  }
   
   void _incrementCounter() {
     setState(() {
@@ -134,7 +126,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.state.toString()),
+        title: Text("hello"),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
