@@ -154,7 +154,15 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     });
   }
 
+  writeData(String data) async {
+    if (steasyDevice == null) return;
+    print('--------------------------');
+    print("MESSAGE SENDED");
+    print('--------------------------');
 
+    List<int> bytes = utf8.encode(data);
+    await targetCharacteristic.write(bytes);
+  }
 
 
 
