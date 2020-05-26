@@ -38,7 +38,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
   StreamSubscription<ScanResult> scanSubScription;
   List<BluetoothDevice> connectedDevices;
   BluetoothDevice steasyDevice;
-  BluetoothCharacteristic targetCharacteristic;
+  BluetoothCharacteristic steasyCharacteristic;
   String connectionText = "";
   bool isConnected;
 
@@ -140,7 +140,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
       if (service.uuid.toString() == serverUUID) {
         service.characteristics.forEach((characteristic) {
           if (characteristic.uuid.toString() == charUUID) {
-            targetCharacteristic = characteristic;
+            steasyCharacteristic = characteristic;
             writeData("Hallo, Steasy-Bluetoth-Hardware-Modul");
             setState(() {
               print('--------------------------');
@@ -161,9 +161,20 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     print('--------------------------');
 
     List<int> bytes = utf8.encode(data);
-    await targetCharacteristic.write(bytes);
+    await steasyCharacteristic.write(bytes);
   }
 
+  disconnectFromDevice() {
+    if (steasyDevice == null) return;
+
+    steasyDevice.disconnect();
+
+    setState(() {
+      connectionText = "---> Device Disconnected <---";
+      isConnected = false;
+      print(connectionText);
+    });
+  }
 
 
 
