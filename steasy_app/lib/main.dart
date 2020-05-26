@@ -132,7 +132,27 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     discoverServices();
   }
 
+  discoverServices() async {
+    if (steasyDevice == null) return;
 
+    List<BluetoothService> services = await steasyDevice.discoverServices();
+    services.forEach((service) {
+      if (service.uuid.toString() == serverUUID) {
+        service.characteristics.forEach((characteristic) {
+          if (characteristic.uuid.toString() == charUUID) {
+            targetCharacteristic = characteristic;
+            writeData("Hallo, Steasy-Bluetoth-Hardware-Modul");
+            setState(() {
+              print('--------------------------');
+              connectionText = "All Ready with ${steasyDevice.name}";
+              print(connectionText);
+              print('--------------------------');
+            });
+          }
+        });
+      }
+    });
+  }
 
 
 
