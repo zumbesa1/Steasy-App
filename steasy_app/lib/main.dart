@@ -419,7 +419,11 @@ class MySteasyState extends State<MyBluetoothApp>
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[],
+        children: <Widget>[
+          SizedBox(
+            height: 40,
+          ),
+        ],
       ),
     );
   }
