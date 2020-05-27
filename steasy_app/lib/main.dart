@@ -222,7 +222,6 @@ class MySteasyState extends State<MyBluetoothApp>
             }));
   }
 
-
   Future<Null> _selectUserDateTime(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -239,7 +238,7 @@ class MySteasyState extends State<MyBluetoothApp>
       });
     }
   }
- 
+
   Widget timer(BuildContext context) {
     return Container(
       child: Column(
@@ -385,17 +384,22 @@ class MySteasyState extends State<MyBluetoothApp>
           Expanded(
               flex: 1,
               child: Row(
-                
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
+                    child: Text("Your next meal will start cooking at: ",
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold)),
+                  ),
+                ],
               )),
           Expanded(
               flex: 1,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  
-                ],
+                children: <Widget>[],
               )),
-        
         ],
       ),
     );
