@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
 
 class MyBluetoothApp extends StatefulWidget {
   @override
-  MyBluetoothAppState createState() => MyBluetoothAppState();
+  SteasyAppState createState() => SteasyAppState();
 }
 
-class MyBluetoothAppState extends State<MyBluetoothApp>
+class SteasyAppState extends State<MyBluetoothApp>
     with SingleTickerProviderStateMixin {
   final String serverUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String charUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
