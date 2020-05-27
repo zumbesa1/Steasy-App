@@ -39,10 +39,13 @@ class MySteasyState extends State<MyBluetoothApp>
   BluetoothCharacteristic steasyCharacteristic;
   String connectionText = "";
   bool isConnected;
+  TabController tb;
+
 
   @override
   void initState() {
     super.initState();
+
 
     FlutterBlue.instance.state.listen((state) {
       if (state == BluetoothState.off) {
@@ -174,6 +177,22 @@ class MySteasyState extends State<MyBluetoothApp>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Hi, did you already eat today?",
+          style: TextStyle(fontSize: 25.0),
+        ),
+        centerTitle: true,
+        bottom: TabBar(
+          tabs: <Widget>[Text("NEXT MEAL?"), Text("DEVICECONNECTION")],
+          labelPadding: EdgeInsets.only(
+            bottom: 15.0,
+          ),
+          labelStyle: TextStyle(fontSize: 15.0),
+          unselectedLabelColor: Colors.white60,
+          controller: tb,
+        )
+      ),
       backgroundColor: Colors.lightGreen,
       body: Center(
         child: Column(
