@@ -41,11 +41,14 @@ class MySteasyState extends State<MyBluetoothApp>
   bool isConnected;
   TabController tb;
 
-
   @override
   void initState() {
     super.initState();
 
+    tb = TabController(
+      length: 2,
+      vsync: this,
+    );
 
     FlutterBlue.instance.state.listen((state) {
       if (state == BluetoothState.off) {
@@ -174,71 +177,58 @@ class MySteasyState extends State<MyBluetoothApp>
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Hi, did you already eat today?",
-          style: TextStyle(fontSize: 25.0),
-        ),
-        centerTitle: true,
-        bottom: TabBar(
-          tabs: <Widget>[Text("NEXT MEAL?"), Text("DEVICECONNECTION")],
-          labelPadding: EdgeInsets.only(
-            bottom: 15.0,
-          ),
-          labelStyle: TextStyle(fontSize: 15.0),
-          unselectedLabelColor: Colors.white60,
-          controller: tb,
-        )
-      ),
-      body: StreamBuilder<BluetoothState>(
-        stream: FlutterBlue.instance.state,
-        initialData: BluetoothState.unknown,
-        builder: (c, snapshot) {
-          final state = snapshot.data;
-          if (state == BluetoothState.off) {
-            return BluetoothIsOff(state: state);
-          }
-          return TabBarView(
-            children: <Widget>[
-              timer(context),
-              deviceConnector(context),             
-            ],
-            controller: tb,
-          );
-        }
-      )
-    );
+        appBar: AppBar(
+            title: Text(
+              "Hi, did you already eat today?",
+              style: TextStyle(fontSize: 25.0),
+            ),
+            centerTitle: true,
+            bottom: TabBar(
+              tabs: <Widget>[Text("NEXT MEAL?"), Text("DEVICECONNECTION")],
+              labelPadding: EdgeInsets.only(
+                bottom: 15.0,
+              ),
+              labelStyle: TextStyle(fontSize: 15.0),
+              unselectedLabelColor: Colors.white60,
+              controller: tb,
+            )),
+        body: StreamBuilder<BluetoothState>(
+            stream: FlutterBlue.instance.state,
+            initialData: BluetoothState.unknown,
+            builder: (c, snapshot) {
+              final state = snapshot.data;
+              if (state == BluetoothState.off) {
+                return BluetoothIsOff(state: state);
+              }
+              return TabBarView(
+                children: <Widget>[
+                  timer(context),
+                  deviceConnector(context),
+                ],
+                controller: tb,
+              );
+            }));
   }
 
-
-    Widget timer(BuildContext context) {
+  Widget timer(BuildContext context) {
     return Container(
       child: Column(
-        children: <Widget>[
-
-        ],
+        children: <Widget>[],
       ),
     );
   }
 
-  
   Widget deviceConnector(BuildContext context) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          
-        ],
+        children: <Widget>[],
       ),
     );
   }
-
-
 }
 
 class BluetoothIsOff extends StatelessWidget {
