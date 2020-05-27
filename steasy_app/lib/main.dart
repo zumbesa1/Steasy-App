@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:intl/intl.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 void main() {
   runApp(MyApp());
@@ -243,7 +244,6 @@ class MySteasyState extends State<MyBluetoothApp>
     return Container(
       child: Column(
         children: <Widget>[
-          
           Expanded(
               flex: 2,
               child: Column(
@@ -271,7 +271,114 @@ class MySteasyState extends State<MyBluetoothApp>
             flex: 5,
             child: Column(
               children: <Widget>[
-
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    "Steasy needs 15 minutes to cook your meal.",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    "At what time would you like to start cooking?",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                          child: Text("HOUR",
+                              style: TextStyle(
+                                  fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        ),
+                        new NumberPicker.integer(
+                            initialValue: hour,
+                            minValue: 00,
+                            maxValue: 23,
+                            onChanged: (val) {
+                              setState(() {
+                                hour = val;
+                                h = hour < 10 ? "0$hour" : "$hour";
+                                m = min < 10 ? "0$min" : "$min";
+                                usersMealDate =
+                                    dateFormat.format(selectedDate).toString() +
+                                        " " +
+                                        h +
+                                        ":" +
+                                        m;
+                              });
+                            }),
+                      ],
+                    ),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(top: 60.0, bottom: 30.0),
+                            child: Text(" : ",
+                                style: TextStyle(
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ]),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                          child: Text("MINUTES",
+                              style: TextStyle(
+                                  fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        ),
+                        new NumberPicker.integer(
+                            initialValue: min,
+                            minValue: 0,
+                            maxValue: 60,
+                            onChanged: (val) {
+                              setState(() {
+                                min = val;
+                                h = hour < 10 ? "0$hour" : "$hour";
+                                m = min < 10 ? "0$min" : "$min";
+                                usersMealDate =
+                                    dateFormat.format(selectedDate).toString() +
+                                        " " +
+                                        h +
+                                        ":" +
+                                        m;
+                              });
+                            }),
+                      ],
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        color: Colors.lightGreen[50],
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            "$h : $m Uhr",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
