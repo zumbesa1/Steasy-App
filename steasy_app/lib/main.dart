@@ -420,6 +420,43 @@ class MySteasyState extends State<MyBluetoothApp>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(
+                  "Settings",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  FloatingActionButton.extended(
+                    onPressed: () => isConnected
+                        ? disconnectFromDevice()
+                        : connectToDevice(),
+                    backgroundColor: isConnected ? Colors.red : Colors.green,
+                    label: isConnected
+                        ? Text(
+                            "Disconnect",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            "Connect",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                    icon: isConnected
+                        ? Icon(Icons.bluetooth_disabled)
+                        : Icon(Icons.bluetooth_connected),
+                  ),
+                ],
+              ),
+            ],
+          ),
           SizedBox(
             height: 40,
           ),
