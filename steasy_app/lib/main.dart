@@ -8,17 +8,12 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Steasy App',
       theme: ThemeData(
-        // This is the theme of your application.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(body: MyBluetoothApp(),)
@@ -31,9 +26,10 @@ class MyBluetoothApp extends StatefulWidget {
 }
 
 class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderStateMixin {
+  
   final String serverUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String charUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-  final String targetDeviceName = "Steasy";
+  final String steasyDeviceName = "Steasy";
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult> scanSubScription;
   List<BluetoothDevice> connectedDevices;
@@ -71,7 +67,7 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
       print(connectionText);
     });
     scanSubScription = flutterBlue.scan().listen((scanResult) {
-      if(scanResult.device.name.contains(targetDeviceName)){
+      if(scanResult.device.name.contains(steasyDeviceName)){
         print('--------------------------');
         print("FOUND DEVICE BY THE NAME");
         print('--------------------------');
