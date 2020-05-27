@@ -236,3 +236,54 @@ class MySteasyState extends State<MyBluetoothApp> with SingleTickerProviderState
     );
   }
 }
+
+
+
+class BluetoothIsOff extends StatelessWidget {
+  const BluetoothIsOff({Key key, this.state}) : super(key: key);
+
+  final BluetoothState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.lightGreen,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.bluetooth_disabled,
+              size: 200.0,
+              color: Colors.white54,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Bluetooth Adapter is ${state != null ? state.toString().substring(15) : 'not available'}.',
+                  style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'To get access to the Steasy-App, please turn on your Bluetooth.',
+                  style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
