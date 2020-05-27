@@ -193,13 +193,21 @@ class MySteasyState extends State<MyBluetoothApp>
           controller: tb,
         )
       ),
-      backgroundColor: Colors.lightGreen,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
-        ),
-      ),
+      body: StreamBuilder<BluetoothState>(
+        stream: FlutterBlue.instance.state,
+        initialData: BluetoothState.unknown,
+        builder: (c, snapshot) {
+          final state = snapshot.data;
+          if (state == BluetoothState.off) {
+            return BluetoothIsOff(state: state);
+          }
+          return TabBarView(
+            children: <Widget>[
+            ],
+            controller: tb,
+          );
+        }
+      )
     );
   }
 }
