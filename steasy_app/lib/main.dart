@@ -174,6 +174,8 @@ class MySteasyState extends State<MyBluetoothApp>
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,6 +205,8 @@ class MySteasyState extends State<MyBluetoothApp>
           }
           return TabBarView(
             children: <Widget>[
+              timer(context),
+              deviceConnector(context),             
             ],
             controller: tb,
           );
@@ -210,6 +214,31 @@ class MySteasyState extends State<MyBluetoothApp>
       )
     );
   }
+
+
+    Widget timer(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+
+        ],
+      ),
+    );
+  }
+
+  
+  Widget deviceConnector(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          
+        ],
+      ),
+    );
+  }
+
+
 }
 
 class BluetoothIsOff extends StatelessWidget {
