@@ -2,6 +2,7 @@ import 'dart:convert' show utf8;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,6 +41,13 @@ class MySteasyState extends State<MyBluetoothApp>
   String connectionText = "";
   bool isConnected;
   TabController tb;
+  int hour = 0;
+  String h = " ";
+  int min = 0;
+  String m = " ";
+  String usersMealDate = "Pleasy Choose Your Date.";
+  DateTime selectedDate = DateTime.now();
+  DateFormat dateFormat = DateFormat.yMMMd();
 
   @override
   void initState() {
@@ -213,6 +221,24 @@ class MySteasyState extends State<MyBluetoothApp>
             }));
   }
 
+
+  Future<Null> _selectUserDateTime(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(Duration(days: 30)));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        String h = hour < 10 ? "0$hour" : "$hour";
+        String m = min < 10 ? "0$min" : "$min";
+        usersMealDate =
+            dateFormat.format(selectedDate).toString() + " " + h + ":" + m;
+      });
+    }
+  }
+ 
   Widget timer(BuildContext context) {
     return Container(
       child: Column(
@@ -222,7 +248,23 @@ class MySteasyState extends State<MyBluetoothApp>
               flex: 2,
               child: Column(
                 children: <Widget>[
-                
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
+                    child: Text(
+                      "What day would you like to heat your food?",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  FloatingActionButton.extended(
+                    backgroundColor: Colors.lightGreen,
+                    onPressed: () => _selectUserDateTime(context),
+                    label: Text(dateFormat.format(selectedDate)),
+                    icon: Icon(Icons.calendar_today),
+                  ),
                 ],
               )),
           Expanded(
