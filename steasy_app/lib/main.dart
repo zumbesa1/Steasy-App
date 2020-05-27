@@ -398,7 +398,17 @@ class MySteasyState extends State<MyBluetoothApp>
               flex: 1,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[],
+                children: <Widget>[
+                  FloatingActionButton.extended(
+                    onPressed: () => writeData("$usersMealDate"),
+                    label: Text(
+                      "$usersMealDate",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    icon: Icon(Icons.send),
+                    backgroundColor: Colors.green,
+                  ),
+                ],
               )),
         ],
       ),
