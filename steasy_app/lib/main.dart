@@ -216,7 +216,38 @@ class MySteasyState extends State<MyBluetoothApp>
   Widget timer(BuildContext context) {
     return Container(
       child: Column(
-        children: <Widget>[],
+        children: <Widget>[
+          
+          Expanded(
+              flex: 2,
+              child: Column(
+                children: <Widget>[
+                
+                ],
+              )),
+          Expanded(
+            flex: 5,
+            child: Column(
+              children: <Widget>[
+
+              ],
+            ),
+          ),
+          Expanded(
+              flex: 1,
+              child: Row(
+                
+              )),
+          Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  
+                ],
+              )),
+        
+        ],
       ),
     );
   }
