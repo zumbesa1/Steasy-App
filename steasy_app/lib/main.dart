@@ -1,3 +1,9 @@
+/// SALAS APP
+
+// For performing some operations asynchronously
+
+// For using PlatformException
+//import 'package:flutter/services.dart';
 import 'dart:convert' show utf8;
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -5,18 +11,16 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Steasy App',
+        title: 'Stesy App',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.green,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: Scaffold(
           body: MyBluetoothApp(),
@@ -26,10 +30,10 @@ class MyApp extends StatelessWidget {
 
 class MyBluetoothApp extends StatefulWidget {
   @override
-  MySteasyState createState() => MySteasyState();
+  MyBluetoothAppState createState() => MyBluetoothAppState();
 }
 
-class MySteasyState extends State<MyBluetoothApp>
+class MyBluetoothAppState extends State<MyBluetoothApp>
     with SingleTickerProviderStateMixin {
   final String serverUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String charUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
@@ -52,18 +56,16 @@ class MySteasyState extends State<MyBluetoothApp>
 
   @override
   void initState() {
-    super.initState();
-
     tb = TabController(
       length: 2,
       vsync: this,
     );
+    super.initState();
 
     FlutterBlue.instance.state.listen((state) {
       if (state == BluetoothState.off) {
         print('----------------------------------');
         print('ALERT THE USER TO TURN ON BLUETOOTH');
-        print('DISCONNECT FROM DEVICE AND STOP SCANNING');
         print('----------------------------------');
       } else if (state == BluetoothState.on) {
         print('----------------------------------');
@@ -80,27 +82,21 @@ class MySteasyState extends State<MyBluetoothApp>
       connectionText = "---> Start Scanning <---";
       print(connectionText);
     });
+
     scanSubScription = flutterBlue.scan().listen((scanResult) {
-      if (scanResult.device.name.contains(steasyDeviceName)) {
+      print(scanResult.device.name);
+      if (scanResult.device.name == steasyDeviceName) {
         print('--------------------------');
         print("FOUND DEVICE BY THE NAME");
         print('--------------------------');
-
+        stopScan();
         setState(() {
           connectionText = "---> Found target Device <---";
           print(connectionText);
         });
 
         steasyDevice = scanResult.device;
-        steasyDevice.state.listen((deviceState) {
-          if (deviceState == BluetoothDeviceState.connected) {
-            print("DEVICE IS CONNECTED");
-          } else if (deviceState == BluetoothDeviceState.disconnected) {
-            print("DEVICE IS DISCONNECTED");
-          } else {
-            print("DEVICESTATE UNKNOWN");
-          }
-        });
+
         connectToDevice();
       }
     }, onDone: () => stopScan());
@@ -114,7 +110,7 @@ class MySteasyState extends State<MyBluetoothApp>
     print('--------------------------');
   }
 
-  Future<void> connectToDevice() async {
+  connectToDevice() async {
     if (steasyDevice == null) return;
     print('--------------------------');
     print("FOUNDED DEVICE IS CONNECTING");
@@ -123,23 +119,37 @@ class MySteasyState extends State<MyBluetoothApp>
       connectionText = "---> Device Connecting <---";
       print(connectionText);
     });
-    connectedDevices = await flutterBlue.connectedDevices;
-    for (BluetoothDevice device in connectedDevices) {
-      print(device);
-      if (device == steasyDevice) {
-        print('ALREADY CONNECTED');
-        isConnected = true;
+    try {
+      connectedDevices = await flutterBlue.connectedDevices;
+      for (BluetoothDevice device in connectedDevices) {
+        print(device);
       }
-    }
-    if (!isConnected) {
       await steasyDevice.connect();
       setState(() {
         connectionText = "---> Device Connected <---";
         isConnected = true;
         print(connectionText);
       });
+    } catch (e) {
+      if (e != 'already_connected') {
+        print('ALREADY CONNECTED');
+        isConnected = true;
+      }
+    } finally {
+      discoverServices();
     }
-    discoverServices();
+  }
+
+  disconnectFromDevice() {
+    if (steasyDevice == null) return;
+
+    steasyDevice.disconnect();
+
+    setState(() {
+      connectionText = "---> Device Disconnected <---";
+      isConnected = false;
+      print(connectionText);
+    });
   }
 
   discoverServices() async {
@@ -174,53 +184,10 @@ class MySteasyState extends State<MyBluetoothApp>
     await steasyCharacteristic.write(bytes);
   }
 
-  disconnectFromDevice() {
-    if (steasyDevice == null) return;
-
-    steasyDevice.disconnect();
-
-    setState(() {
-      connectionText = "---> Device Disconnected <---";
-      isConnected = false;
-      print(connectionText);
-    });
+  Future<Null> sendIt(BuildContext context) async {
+    await writeData("$usersMealDate");
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            title: Text(
-              "Hi, did you already eat today?",
-              style: TextStyle(fontSize: 25.0),
-            ),
-            centerTitle: true,
-            bottom: TabBar(
-              tabs: <Widget>[Text("NEXT MEAL?"), Text("DEVICECONNECTION")],
-              labelPadding: EdgeInsets.only(
-                bottom: 15.0,
-              ),
-              labelStyle: TextStyle(fontSize: 15.0),
-              unselectedLabelColor: Colors.white60,
-              controller: tb,
-            )),
-        body: StreamBuilder<BluetoothState>(
-            stream: FlutterBlue.instance.state,
-            initialData: BluetoothState.unknown,
-            builder: (c, snapshot) {
-              final state = snapshot.data;
-              if (state == BluetoothState.off) {
-                return BluetoothIsOff(state: state);
-              }
-              return TabBarView(
-                children: <Widget>[
-                  timer(context),
-                  deviceConnector(context),
-                ],
-                controller: tb,
-              );
-            }));
-  }
 
   Future<Null> _selectUserDateTime(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -400,7 +367,7 @@ class MySteasyState extends State<MyBluetoothApp>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FloatingActionButton.extended(
-                    onPressed: () => writeData("$usersMealDate"),
+                    onPressed: () => sendIt(context),
                     label: Text(
                       "$usersMealDate",
                       style: TextStyle(fontSize: 20),
@@ -500,10 +467,50 @@ class MySteasyState extends State<MyBluetoothApp>
       ),
     );
   }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Hi, did you already eat today?",
+          style: TextStyle(fontSize: 25.0),
+        ),
+        centerTitle: true,
+        bottom: TabBar(
+          tabs: <Widget>[Text("NEXT MEAL?"), Text("DEVICECONNECTION")],
+          labelPadding: EdgeInsets.only(
+            bottom: 15.0,
+          ),
+          labelStyle: TextStyle(fontSize: 15.0),
+          unselectedLabelColor: Colors.white60,
+          controller: tb,
+        )
+      ),
+      body: StreamBuilder<BluetoothState>(
+        stream: FlutterBlue.instance.state,
+        initialData: BluetoothState.unknown,
+        builder: (c, snapshot) {
+          final state = snapshot.data;
+          if (state == BluetoothState.off) {
+            return BluetoothOffScreen(state: state);
+          }
+          return TabBarView(
+            children: <Widget>[
+              timer(context),
+              deviceConnector(context),
+            ],
+            controller: tb,
+          );
+        }
+      )
+    );
+  }
 }
 
-class BluetoothIsOff extends StatelessWidget {
-  const BluetoothIsOff({Key key, this.state}) : super(key: key);
+class BluetoothOffScreen extends StatelessWidget {
+  const BluetoothOffScreen({Key key, this.state}) : super(key: key);
 
   final BluetoothState state;
 
