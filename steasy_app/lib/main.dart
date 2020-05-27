@@ -460,6 +460,42 @@ class MySteasyState extends State<MyBluetoothApp>
           SizedBox(
             height: 40,
           ),
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(
+                  "Bluetoothstate",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: isConnected
+                      ? Text(
+                          "Connected",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Text(
+                          "Disconnected",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )),
+            ],
+          ),
         ],
       ),
     );
